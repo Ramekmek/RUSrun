@@ -7,6 +7,16 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
+
+import java.io.IOException;
+
 public class SignUpActivity extends AppCompatActivity {
 
     //Explicit
@@ -15,6 +25,7 @@ public class SignUpActivity extends AppCompatActivity {
     private RadioButton avatar0RadioButton,avatar1RadioButton,
              avatar2RadioButton,avatar3RadioButton, avatar4RadioButton;
     private String nameString,userString , passwordString,avatarString;
+    private static final String urlPHP = "http://swiftcodingthai.com/rus/add_user_master.php";
 
 
 
@@ -34,7 +45,35 @@ public class SignUpActivity extends AppCompatActivity {
         avatar3RadioButton = (RadioButton) findViewById(R.id.radioButton4);
         avatar4RadioButton = (RadioButton) findViewById(R.id.radioButton5);
 
+        //Radio Controller
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                switch (checkedId) {
+
+                    case R.id.radioButton:
+                        avatarString = "0";
+                        break;
+                    case R.id.radioButton2:
+                        avatarString = "1";
+                        break;
+                    case  R.id.radioButton3:
+                        avatarString = "2";
+                        break;
+                    case R.id.radioButton4:
+                        avatarString = "3";
+                        break;
+                    case  R.id.radioButton5:
+                        avatarString = "4";
+                        break;
+
+                }   // switch
+            }
+        });
+
     }   //Main Method
+
 
     public void clickSignUpSign(View view){
 
@@ -48,12 +87,63 @@ public class SignUpActivity extends AppCompatActivity {
 
             MyAlert myAlert = new MyAlert();
             myAlert.myDialog(this, "มีช่องว่าง", "กรุณากรอกทุกช่อง");
+
+        } else if (checkChoose()) {
+            // Check
+            updateNewUserToServer();
+
+        } else {
+            // Un Check
+            MyAlert myAlert = new MyAlert();
+            myAlert.myDialog(this, "ยังไม่เลือก Avatar",
+                    "กรุณาเลือก Avatar");
+
         }
 
 
 
 
     }   // clickSignUp
+
+    private void updateNewUserToServer() {
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        RequestBody requestBody = new FormEncodingBuilder()
+                .add("isAdd", "true")
+                .add("Name", nameString)
+                .add("User", userString)
+                .add("Password", passwordString)
+                .add("Avatar", avatarString)
+                .build();
+        Request.Builder builder = new Request.Builder();
+        Request request = builder.url(urlPHP).post(requestBody).build();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                finish();
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+
+            }
+        });
+
+    } // Update
+
+    private boolean checkChoose() {
+
+        boolean status = true;
+
+        status = avatar0RadioButton.isChecked() ||
+                avatar1RadioButton.isChecked() ||
+                avatar2RadioButton.isChecked() ||
+                avatar3RadioButton.isChecked() ||
+                avatar4RadioButton.isChecked();
+
+        return status;
+    }
 
 
 }   //Main Class
