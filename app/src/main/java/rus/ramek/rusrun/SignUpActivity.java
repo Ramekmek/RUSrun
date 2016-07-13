@@ -23,7 +23,7 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText nameEditText,userEditText, passwordEditText;
     private RadioGroup radioGroup;
     private RadioButton avatar0RadioButton,avatar1RadioButton,
-             avatar2RadioButton,avatar3RadioButton, avatar4RadioButton;
+            avatar2RadioButton,avatar3RadioButton, avatar4RadioButton;
     private String nameString,userString , passwordString,avatarString;
     private static final String urlPHP = "http://swiftcodingthai.com/rus/add_user_master.php";
 
@@ -77,7 +77,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     public void clickSignUpSign(View view){
 
-            // Get Value from Edit Text
+        // Get Value from Edit Text
         nameString = nameEditText.getText().toString().trim();
         userString = userEditText.getText().toString().trim();
         passwordString = passwordEditText.getText().toString().trim();
@@ -113,7 +113,7 @@ public class SignUpActivity extends AppCompatActivity {
                 .add("Name", nameString)
                 .add("User", userString)
                 .add("Password", passwordString)
-                .add("Avatar", avatarString)
+                .add("Avata", avatarString)
                 .build();
         Request.Builder builder = new Request.Builder();
         Request request = builder.url(urlPHP).post(requestBody).build();
@@ -121,11 +121,12 @@ public class SignUpActivity extends AppCompatActivity {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-                finish();
+
             }
 
             @Override
             public void onResponse(Response response) throws IOException {
+                finish();
 
             }
         });
